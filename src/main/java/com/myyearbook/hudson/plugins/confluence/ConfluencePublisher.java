@@ -64,6 +64,7 @@ public class ConfluencePublisher extends Notifier implements Saveable {
     private final String siteName;
     private final boolean attachArchivedArtifacts;
     private final boolean buildIfUnstable;
+    private final boolean buildIfStable;
     private final String fileSet;
     private final boolean replaceAttachments;
     private final String labels;
@@ -74,8 +75,8 @@ public class ConfluencePublisher extends Notifier implements Saveable {
     private DescribableList<MarkupEditor, Descriptor<MarkupEditor>> editors = new DescribableList<MarkupEditor, Descriptor<MarkupEditor>>(
             this);
 
-    @DataBoundConstructor
-    public ConfluencePublisher(String siteName, final boolean buildIfUnstable,
+   @DataBoundConstructor
+    public ConfluencePublisher(String siteName, final boolean buildIfUnstable, final boolean buildIfStable,
             final String spaceName, final String pageName, final String labels, final boolean attachArchivedArtifacts,
             final String fileSet, final List<MarkupEditor> editorList, final boolean replaceAttachments) throws IOException {
 
@@ -92,6 +93,7 @@ public class ConfluencePublisher extends Notifier implements Saveable {
         this.pageName = pageName;
         this.labels = labels;
         this.buildIfUnstable = buildIfUnstable;
+        this.buildIfStable = buildIfStable;
         this.attachArchivedArtifacts = attachArchivedArtifacts;
         this.fileSet = fileSet;
         this.replaceAttachments = replaceAttachments;
@@ -317,6 +319,12 @@ public class ConfluencePublisher extends Notifier implements Saveable {
             log(listener, "Build status is not SUCCESS (" + build.getResult().toString() + ").");
             return true;
         }
+        if (!buildIfStable && Result.SUCCESS.equals(buildResult))
+        {
+           // Don't process for successful builds
+           log(listener, "Build status is SUCCESS (" + build.getResult.toString() + ").");
+           return true;
+        }
 
         EnvVarAction buildResultAction = new EnvVarAction("BUILD_RESULT", String
                 .valueOf(buildResult));
@@ -532,6 +540,12 @@ public class ConfluencePublisher extends Notifier implements Saveable {
      */
     public boolean shouldBuildIfUnstable() {
         return buildIfUnstable;
+    }
+    /**
+     * @return the buildIfStable
+     */
+    public boolean shouldBuildIfStable() {
+       return buildIfStable();
     }
     /**
      * @return the replaceAttachments

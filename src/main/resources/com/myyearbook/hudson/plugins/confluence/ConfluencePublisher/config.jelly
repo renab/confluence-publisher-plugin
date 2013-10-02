@@ -11,8 +11,13 @@
     </f:entry>
 
     <f:entry title="" field="buildIfUnstable">
-        <f:checkbox title="Publish even if the build is unstable"
+        <f:checkbox title="Publish if the build is unstable"
             checked="${instance.shouldBuildIfUnstable()}" default="false" />
+    </f:entry>
+
+     <f:entry title="" field="buildIfStable">
+        <f:checkbox title="Publish if the build is stable"
+            checked="${instance.shouldBuildIfStable()}" default="false" />
     </f:entry>
 
     <f:entry title="Space" field="spaceName">
